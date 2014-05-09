@@ -77,12 +77,12 @@ IAsyncAction^ Direct3DInterop::OnSuspending()
     return m_renderer->OnSuspending();
 }
 
-bool Direct3DInterop::OnBackKeyPress()
+void Direct3DInterop::OnBackKeyPress()
 {
     std::lock_guard<std::mutex> guard(mMutex);
     std::shared_ptr<BackButtonEvent> e(new BackButtonEvent());
     mInputEvents.push(e);
-	return true;
+	/*return m_renderer->OnBackKeyPress();*/
 	/*return m_renderer->OnBackKeyPress();*/
 
 }
