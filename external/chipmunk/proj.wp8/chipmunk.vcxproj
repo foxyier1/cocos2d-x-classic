@@ -289,7 +289,7 @@
     </ClCompile>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{3ad76ea1-d698-40d2-b04d-d9ab8171f40b}</ProjectGuid>
+    <ProjectGuid>{BA568A33-98F9-4D2A-BFFF-C065ADCB447A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <ProjectName>libchipmunk</ProjectName>
     <RootNamespace>chipmunk</RootNamespace>

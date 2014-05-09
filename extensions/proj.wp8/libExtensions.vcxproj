@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{a5ce59f9-2785-4e08-bd3c-0f370eeca439}</ProjectGuid>
+    <ProjectGuid>{04A0C42F-23BB-469B-A9D8-CA49136ADBD4}</ProjectGuid>
     <RootNamespace>libExtensions</RootNamespace>
     <DefaultLanguage>en-US</DefaultLanguage>
     <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>

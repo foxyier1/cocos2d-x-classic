@@ -31,13 +31,13 @@ THE SOFTWARE.
 #include <memory>
 #include "Cocos2dRenderer.h"
 #include "InputEvent.h"
-#include <DrawingSurfaceNative.h>
 
+#include "CompletedEventArgs.h"
+#include "CustomControlEvent.h"
 
 namespace PhoneDirect3DXamlAppComponent
 {
 
-public delegate void RequestAdditionalFrameHandler();
 
 
 [Windows::Foundation::Metadata::WebHostHidden]
@@ -46,21 +46,20 @@ public ref class Direct3DInterop sealed : public Windows::Phone::Input::Interop:
 public:
     Direct3DInterop();
 
-	Windows::Phone::Graphics::Interop::IDrawingSurfaceBackgroundContentProvider^ CreateContentProvider();
+    Windows::Phone::Graphics::Interop::IDrawingSurfaceContentProvider^ CreateContentProvider();
 
     // IDrawingSurfaceManipulationHandler
     virtual void SetManipulationHost(Windows::Phone::Input::Interop::DrawingSurfaceManipulationHost^ manipulationHost);
 
-	event RequestAdditionalFrameHandler^ RequestAdditionalFrame;
-
-
     void UpdateForWindowSizeChange(float width, float height);
     Windows::Foundation::IAsyncAction^ OnSuspending();
 
-    void OnBackKeyPress();
+    bool OnBackKeyPress();
     void OnCocos2dKeyEvent(Cocos2dKeyEvent key);
     void OnCocos2dKeyEvent(Cocos2dKeyEvent key, Platform::String^ text);
 	void OnCocos2dEditboxEvent(Object^ sender, Platform::String^ args, Windows::Foundation::EventHandler<Platform::String^>^ handler);
+	//by xsprite
+	void OnCustomControlEvent(Object^ sender, CompletedEventArgs^ args, Windows::Foundation::EventHandler<CompletedEventArgs^>^ handler);
 
     property Windows::Graphics::Display::DisplayOrientations WindowOrientation;
     property Windows::Foundation::Size WindowBounds;
@@ -75,12 +74,11 @@ protected:
     void OnPointerPressed(Windows::Phone::Input::Interop::DrawingSurfaceManipulationHost^ sender, Windows::UI::Core::PointerEventArgs^ args);
     void OnPointerMoved(Windows::Phone::Input::Interop::DrawingSurfaceManipulationHost^ sender, Windows::UI::Core::PointerEventArgs^ args);
     void OnPointerReleased(Windows::Phone::Input::Interop::DrawingSurfaceManipulationHost^ sender, Windows::UI::Core::PointerEventArgs^ args);
-
 internal:
-	HRESULT Connect(_In_ IDrawingSurfaceRuntimeHostNative* host, _In_ ID3D11Device1* device);
+    void Connect();
     void Disconnect();
-	HRESULT PrepareResources(_In_ const LARGE_INTEGER* presentTargetTime, _Inout_ DrawingSurfaceSizeF* desiredRenderTargetSize);
-    HRESULT Draw(_In_ ID3D11Device1* device, _In_ ID3D11DeviceContext1* context, _In_ ID3D11RenderTargetView* renderTargetView);
+    void PrepareResources(LARGE_INTEGER presentTargetTime);
+    void Draw(_In_ ID3D11Device1* device, _In_ ID3D11DeviceContext1* context, _In_ ID3D11RenderTargetView* renderTargetView);
     bool SendCocos2dEvent(Cocos2dEvent event);
 
 private:
@@ -91,7 +89,6 @@ private:
 
     std::queue<std::shared_ptr<InputEvent>> mInputEvents;
     std::mutex mMutex;
-    std::mutex mRenderingMutex;
 
     Cocos2dEventDelegate^ m_delegate;
     Cocos2dMessageBoxDelegate^ m_messageBoxDelegate;

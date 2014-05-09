@@ -1,5 +1,5 @@
 /****************************************************************************
-Copyright (c) 2010 cocos2d-x.org
+Copyright (c) 2013 cocos2d-x.org
 Copyright (c) Microsoft Open Technologies, Inc.
 
 http://www.cocos2d-x.org
@@ -23,23 +23,25 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ****************************************************************************/
 
-#ifndef __CCGL_ANGLE_H__
-#define __CCGL_ANGLE_H__
+//// THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF
+//// ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+//// THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A
+//// PARTICULAR PURPOSE.
+////
+//// Copyright (c) Microsoft Corporation. All rights reserved
 
-#include "../third_party/winrt/angleproject/include/GLES2/gl2.h"
-#include "../third_party/winrt/angleproject/include/GLES2/gl2ext.h"
-#include "../third_party/winrt/angleproject/src/common/winrtangle.h"
+#pragma once
 
-#define GL_BGRA						GL_BGRA_EXT
 
-#define	glClearDepth				glClearDepthf
-#define glDeleteVertexArrays		glDeleteVertexArraysOES
-#define glGenVertexArrays			glGenVertexArraysOES
-#define glBindVertexArray			glBindVertexArrayOES
-#define glMapBuffer					glMapBufferOES
-#define glUnmapBuffer				glUnmapBufferOES
-
-#define GL_DEPTH24_STENCIL8			GL_DEPTH24_STENCIL8_OES
-#define GL_WRITE_ONLY				GL_WRITE_ONLY_OES
-
-#endif // __CCGL_ANGLE_H__
+// This header defines helper utilities to make DirectX APIs work with exceptions.
+namespace DX
+{
+    inline void ThrowIfFailed(HRESULT hr)
+    {
+        if (FAILED(hr))
+        {
+            // Set a breakpoint on this line to catch DX API errors.
+            throw Platform::Exception::CreateException(hr);
+        }
+    }
+}

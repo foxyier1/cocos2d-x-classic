@@ -104,5 +104,4 @@ void CCComponent::setEnabled(bool b)
     m_bEnabled = b;
 }
 
-
 NS_CC_END

@@ -122,7 +122,7 @@
     <ClInclude Include="..\Rope\b2Rope.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{79fc91d4-974c-4bc7-8e8c-79e194437de7}</ProjectGuid>
+    <ProjectGuid>{C55734A3-702C-4FA1-B950-32C8E169302F}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <ProjectName>libBox2D</ProjectName>
     <RootNamespace>Box2D</RootNamespace>
