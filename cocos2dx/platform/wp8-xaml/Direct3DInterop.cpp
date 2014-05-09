@@ -45,25 +45,13 @@ Direct3DInterop::Direct3DInterop()
     m_renderer = ref new Cocos2dRenderer();
 }
 
-IDrawingSurfaceBackgroundContentProvider^ Direct3DInterop::CreateContentProvider()
+
+IDrawingSurfaceContentProvider^ Direct3DInterop::CreateContentProvider()
 {
-	ComPtr<Direct3DContentProvider> provider = Make<Direct3DContentProvider>(this);
-	return reinterpret_cast<IDrawingSurfaceBackgroundContentProvider^>(provider.Get());
+    ComPtr<Direct3DContentProvider> provider = Make<Direct3DContentProvider>(this);
+    return reinterpret_cast<IDrawingSurfaceContentProvider^>(provider.Get());
 }
 
-
-// Interface With Direct3DContentProvider
-HRESULT Direct3DInterop::Connect(_In_ IDrawingSurfaceRuntimeHostNative* host, _In_ ID3D11Device1* device)
-{
-    //m_renderer->SetDevice(device);
-    return S_OK;
-}
-
-void Direct3DInterop::Disconnect()
-{
-    std::lock_guard<std::mutex> guard(mRenderingMutex);
-    m_renderer->Disconnect();
-}
 
 // IDrawingSurfaceManipulationHandler
 void Direct3DInterop::SetManipulationHost(DrawingSurfaceManipulationHost^ manipulationHost)
@@ -89,11 +77,13 @@ IAsyncAction^ Direct3DInterop::OnSuspending()
     return m_renderer->OnSuspending();
 }
 
-void Direct3DInterop::OnBackKeyPress()
+bool Direct3DInterop::OnBackKeyPress()
 {
-    std::lock_guard<std::mutex> guard(mMutex);
+   /* std::lock_guard<std::mutex> guard(mMutex);
     std::shared_ptr<BackButtonEvent> e(new BackButtonEvent());
-    mInputEvents.push(e);
+    mInputEvents.push(e);*/
+	return m_renderer->OnBackKeyPress();
+
 }
 
 // Pointer Event Handlers. We need to queue up pointer events to pass them to the drawing thread
@@ -156,30 +146,34 @@ void Direct3DInterop::ProcessEvents()
 }
 
 
-HRESULT Direct3DInterop::PrepareResources(_In_ const LARGE_INTEGER* presentTargetTime, _Inout_ DrawingSurfaceSizeF* desiredRenderTargetSize)
+// Interface With Direct3DContentProvider
+void Direct3DInterop::Connect()
 {
-	desiredRenderTargetSize->width = WindowBounds.Width;
-	desiredRenderTargetSize->height = WindowBounds.Height;
-	return S_OK;
+
+    m_renderer->Connect();
 }
 
-HRESULT Direct3DInterop::Draw(_In_ ID3D11Device1* device, _In_ ID3D11DeviceContext1* context, _In_ ID3D11RenderTargetView* renderTargetView)
+void Direct3DInterop::Disconnect()
 {
-    std::lock_guard<std::mutex> guard(mRenderingMutex);
+    m_renderer->Disconnect();
+}
+
+void Direct3DInterop::PrepareResources(LARGE_INTEGER presentTargetTime)
+{
+}
+
+void Direct3DInterop::Draw(_In_ ID3D11Device1* device, _In_ ID3D11DeviceContext1* context, _In_ ID3D11RenderTargetView* renderTargetView)
+{
+ 
 
     m_renderer->UpdateDevice(device, context, renderTargetView);
-#if 0
     if(mCurrentOrientation != WindowOrientation)
     {
         mCurrentOrientation = WindowOrientation;
         m_renderer->OnOrientationChanged(mCurrentOrientation);
-    }  
-#endif // 0
-
+    }
     ProcessEvents();
     m_renderer->Render();
-	RequestAdditionalFrame();
-	return S_OK;
 }
 
 void Direct3DInterop::SetCocos2dEventDelegate(Cocos2dEventDelegate^ delegate) 
@@ -210,5 +204,13 @@ bool Direct3DInterop::SendCocos2dEvent(Cocos2dEvent event)
     }
     return false;
 }
+//by xsprite
+void Direct3DInterop::OnCustomControlEvent(Object^ sender, CompletedEventArgs^ args, Windows::Foundation::EventHandler<CompletedEventArgs^>^ handler)
+{
+	std::lock_guard<std::mutex> guard(mMutex);
+	std::shared_ptr<CustomControlEvent> e(new CustomControlEvent(sender, args, handler));
+	mInputEvents.push(e);
+}
+
 
 }

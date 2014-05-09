@@ -31,6 +31,10 @@ THE SOFTWARE.
 #include "support/zip_support/unzip.h"
 #include <stack>
 #include <algorithm>
+#include "../cocoa/CCInteger.h"
+#include "../cocoa/CCBool.h"
+#include "../cocoa/CCFloat.h"
+#include "../cocoa/CCDouble.h"
 
 using namespace std;
 
@@ -383,25 +387,71 @@ bool CCFileUtils::writeToFile(cocos2d::CCDictionary *dict, const std::string &fu
  */
 static tinyxml2::XMLElement* generateElementForObject(cocos2d::CCObject *object, tinyxml2::XMLDocument *pDoc)
 {
-    // object is CCString
-    if (CCString *str = dynamic_cast<CCString *>(object))
-    {
-        tinyxml2::XMLElement* node = pDoc->NewElement("string");
-        tinyxml2::XMLText* content = pDoc->NewText(str->getCString());
-        node->LinkEndChild(content);
-        return node;
-    }
-    
-    // object is CCArray
-    if (CCArray *array = dynamic_cast<CCArray *>(object))
-        return generateElementForArray(array, pDoc);
-    
-    // object is CCDictionary
-    if (CCDictionary *innerDict = dynamic_cast<CCDictionary *>(object))
-        return generateElementForDict(innerDict, pDoc);
-    
-    CCLOG("This type cannot appear in property list");
-    return NULL;
+	// object is CCString
+	if (CCString *str = dynamic_cast<CCString *>(object))
+	{
+		tinyxml2::XMLElement* node = pDoc->NewElement("string");
+		tinyxml2::XMLText* content = pDoc->NewText(str->getCString());
+		node->LinkEndChild(content);
+		return node;
+	}
+
+	//object is CCInteger
+	if (CCInteger *val = dynamic_cast<CCInteger *>(object))
+	{
+		tinyxml2::XMLElement* node = pDoc->NewElement("integer");
+		char strVal[33] = { 0 };
+		sprintf(strVal, "%d", val->getValue());
+		tinyxml2::XMLText* content = pDoc->NewText(strVal);
+		node->LinkEndChild(content);
+		return node;
+	}
+
+	//object is CCFloat
+	if (CCFloat *val = dynamic_cast<CCFloat *>(object))
+	{
+		tinyxml2::XMLElement* node = pDoc->NewElement("real");
+		char strVal[64] = { 0 };
+		sprintf(strVal, "%f", val->getValue());
+		tinyxml2::XMLText* content = pDoc->NewText(strVal);
+		node->LinkEndChild(content);
+		return node;
+	}
+
+	//object is CCDouble
+	if (CCDouble *val = dynamic_cast<CCDouble *>(object))
+	{
+		tinyxml2::XMLElement* node = pDoc->NewElement("real");
+		char strVal[64] = { 0 };
+		sprintf(strVal, "%d", val->getValue());
+		tinyxml2::XMLText* content = pDoc->NewText(strVal);
+		node->LinkEndChild(content);
+		return node;
+	}
+
+	//object is CCBool
+	if (CCBool *val = dynamic_cast<CCBool *>(object))
+	{
+		if (val->getValue())
+		{
+			return pDoc->NewElement("true");
+		}
+		else
+		{
+			return pDoc->NewElement("false");
+		}
+	}
+
+	// object is CCArray
+	if (CCArray *array = dynamic_cast<CCArray *>(object))
+		return generateElementForArray(array, pDoc);
+
+	// object is CCDictionary
+	if (CCDictionary *innerDict = dynamic_cast<CCDictionary *>(object))
+		return generateElementForDict(innerDict, pDoc);
+
+	CCLOG("This type cannot appear in property list");
+	return NULL;
 }
 
 /*

@@ -39,8 +39,6 @@ THE SOFTWARE.
 
 #include "esUtil.h"
 
-using namespace Windows::Foundation;
-
 NS_CC_BEGIN
 
 class CCEGL;
@@ -56,8 +54,7 @@ public:
 	void setIMEKeyboardState(bool bOpen);
     void swapBuffers();
 
-	void ReleasePointerPressed();
-	void EnablePointerPressed();
+
 private:
 	CCPoint GetCCPoint(Windows::UI::Core::PointerEventArgs^ args);
 
@@ -90,11 +87,8 @@ private:
 	ESContext m_esContext;
 	Windows::UI::Xaml::Controls::TextBox^ m_textBox;
 	Windows::UI::Xaml::Controls::Button^ m_dummy;
-	Windows::Foundation::EventRegistrationToken m_pointerPressedEvent;
 	friend CCEGLView;
 };
-
-ref class CCEditBoxParam;
 
 class CC_DLL CCEGLView : public CCEGLViewProtocol
 {
@@ -115,15 +109,11 @@ public:
 	void OnRendering();
     void OnSuspending();
 
-	void openEditBox(CCEditBoxParam^ param);
-	void SetCocosEditBoxHandler(EventHandler<Platform::Object^>^ handler);
-	void OnCloseEditBox();
-	
 private:
 	Windows::Foundation::EventRegistrationToken m_eventToken;
 	Windows::Foundation::Point m_lastPoint;
 	bool m_lastPointValid;
-	EventHandler<Platform::Object^>^ m_editBoxhandler;
+
 public:
 
     // winrt platform functions

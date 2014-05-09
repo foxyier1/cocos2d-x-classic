@@ -50,7 +50,7 @@ public:
 	void OnPointerMoved(Windows::UI::Core::PointerEventArgs^ args);
 	void OnPointerReleased(Windows::UI::Core::PointerEventArgs^ args);
     Windows::Foundation::IAsyncAction^ OnSuspending();
-    void OnBackKeyPress();
+    bool OnBackKeyPress();
     void Connect();
     void Disconnect();
 

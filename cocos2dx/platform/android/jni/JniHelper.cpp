@@ -62,7 +62,7 @@ extern "C"
             pthread_key_create (&s_threadKey, detach_current_thread);
             if (JAVAVM->AttachCurrentThread(env, 0) < 0)
             {
-                LOGD("%s", "Failed to get the environment using AttachCurrentThread()");
+                LOGD("Failed to get the environment using AttachCurrentThread()");
                 break;
             }
             if (pthread_getspecific(s_threadKey) == NULL)
@@ -70,7 +70,7 @@ extern "C"
             bRet = true;
             break;
         default:
-            LOGD("%s", "Failed to get the environment using GetEnv()");
+            LOGD("Failed to get the environment using GetEnv()");
             break;
         }      
 
